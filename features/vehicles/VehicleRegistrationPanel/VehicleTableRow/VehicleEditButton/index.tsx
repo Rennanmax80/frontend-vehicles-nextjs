@@ -21,7 +21,7 @@ export default function VehicleEditButton({ vehicleId }: Props) {
   const formId = useId();
   const queryClient = useQueryClient();
 
-  const vehicleQuery = useQuery({
+  const vehicleQuery = useQuery<VehicleSchema>({
     queryKey: ['veiculos', vehicleId],
     queryFn: () => getVehicleById(vehicleId),
     enabled: open,

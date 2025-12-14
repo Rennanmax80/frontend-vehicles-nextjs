@@ -7,7 +7,7 @@ import { MenuItem, TextField } from '@mui/material';
 
 interface Props {
   formId: string;
-  defaultValues: Partial<VehicleSchema> | null;
+  defaultValues?: Partial<VehicleSchema>;
   onSubmit: (data: VehicleSchema) => void;
 }
 

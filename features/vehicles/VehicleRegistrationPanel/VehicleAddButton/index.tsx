@@ -31,7 +31,7 @@ export default function VehicleAddButton() {
           <Box>
             <Feedback {...mutation} successMessage="Veículo cadastrado" errorMessage="Erro ao cadastrar" />
             {!mutation.isLoading && (
-              <VehicleForm formId={formId} onSubmit={mutation.mutate} defaultValues={null} />
+              <VehicleForm formId={formId} onSubmit={mutation.mutate} />
             )}
           </Box>
         }
