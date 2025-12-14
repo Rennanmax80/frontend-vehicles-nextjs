@@ -1,0 +1,52 @@
+src/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx                # Login
+│   ├── dashboard/
+│   │   ├── layout.tsx          # Sidebar + Outlet
+│   │   ├── page.tsx            # Redirect padrão
+│   │   ├── vehicle-panel/
+│   │   │   └── page.tsx
+│   │   ├── vehicle-decade/
+│   │   │   └── page.tsx
+│   │   ├── vehicle-brand/
+│   │   │   └── page.tsx
+│
+├── components/
+│   ├── AsideMenu/
+│   ├── Dialog/
+│   ├── Feedback/
+│   ├── Spinner/
+│   ├── Table/
+│   └── forms/
+│       ├── FormControl.tsx
+│       ├── InputText.tsx
+│       └── AutoComplete.tsx
+│
+├── features/
+│   └── vehicles/
+│       ├── VehicleRegistrationPanel/
+│       ├── VehicleFindByDecade/
+│       └── VehicleFindByBrand/
+│
+├── services/
+│   └── vehicles/
+│
+├── types/
+│   ├── vehicle.types.ts
+│   ├── vehicle-brand.types.ts
+│   └── vehicle-decade.types.ts
+│
+├── lib/
+│   ├── axios.ts
+│   └── react-query.tsx
+│
+└── theme/
+    └── theme.ts
+
+
+#### Proximos passos
+ - Conectar a API https://docs.cardog.ai/quickstart para trazer os detalhes dos carros por marca
+ - Seguirá o cenário 2 do MVP
+ - Implementar autenticação - magic link
+ 
