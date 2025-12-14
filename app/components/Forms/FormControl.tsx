@@ -1,18 +1,29 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useForm, FieldValues, DeepPartial } from 'react-hook-form';
+import {
+  useForm,
+  FieldValues,
+  DefaultValues,
+} from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ZodSchema } from 'zod';
 import { Box } from '@mui/material';
 
 interface Props<T extends FieldValues> {
   formId: string;
-  defaultValues: DeepPartial<T> | null;
+  defaultValues?: DefaultValues<T>;
   formValidationSchema: ZodSchema<T>;
   styles: object;
   onSubmit: (data: T) => void;
-  render: (control: any, errors: any, helpers: any) => ReactNode;
+  render: (
+    control: any,
+    errors: any,
+    helpers: {
+      setValue: any;
+      watch: any;
+    }
+  ) => ReactNode;
 }
 
 export default function FormControl<T extends FieldValues>({
@@ -31,7 +42,7 @@ export default function FormControl<T extends FieldValues>({
     watch,
   } = useForm<T>({
     resolver: zodResolver(formValidationSchema),
-    ...(defaultValues && { defaultValues }),
+    defaultValues,
   });
 
   return (
