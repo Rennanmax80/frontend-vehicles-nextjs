@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import {
   Box,
@@ -18,8 +18,12 @@ import { getVehicles } from '@/services/vehicle/getVehicles';
 import { getVehiclesByWeek } from '@/services/vehicle/getVehiclesByWeek';
 import VehicleTableRow from './VehicleTableRow';
 import VehicleAddButton from './VehicleAddButton';
+import VehicleDetailsModal from '../VehicleDetailsModal';
+import { Vehicle } from '@/types/vehicle.types';
 
 export default function VehicleRegistrationPanel() {
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [filtros, setFiltros] = useState({
     marca: '',
     ano: '',
@@ -48,6 +52,12 @@ export default function VehicleRegistrationPanel() {
     setFiltros({ marca: '', ano: '', vendidos: '', ultimaSemana: false });
     refetch();
   };
+
+  const handleOpenDetails = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setDetailsOpen(true);
+  };
+
 
   return (
     <Box sx={{ padding: 6 }}>
@@ -83,10 +93,19 @@ export default function VehicleRegistrationPanel() {
           {data && (
             <Table headings={['Id', 'Ano', 'Descrição', 'Marca', 'Vendido', 'Veículo', 'Ações']}>
               {data.map(vehicle => (
-                <VehicleTableRow key={vehicle.id} vehicle={vehicle} />
+                <VehicleTableRow
+                  key={vehicle.id}
+                  vehicle={vehicle}
+                  onDetails={handleOpenDetails}
+                />
               ))}
             </Table>
           )}
+          <VehicleDetailsModal
+            open={detailsOpen}
+            onClose={() => setDetailsOpen(false)}
+            vehicle={selectedVehicle}
+          />
         </>
       )}
     </Box>
