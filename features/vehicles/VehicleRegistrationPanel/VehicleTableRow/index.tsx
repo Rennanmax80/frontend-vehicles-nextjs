@@ -1,11 +1,16 @@
 'use client';
 
-import { TableRow, TableCell } from '@mui/material';
+import { TableRow, TableCell, Button, Stack } from '@mui/material';
 import { Vehicle } from '@/types/vehicle.types';
 import VehicleEditButton from './VehicleEditButton';
 import VehicleDeleteButton from './VehicleDeleteButton';
 
-export default function VehicleTableRow({ vehicle }: { vehicle: Vehicle }) {
+interface Props {
+  vehicle: Vehicle;
+  onDetails: (vehicle: Vehicle) => void;
+}
+
+export default function VehicleTableRow({ vehicle, onDetails }: Props) {
   return (
     <TableRow hover>
       <TableCell>{vehicle.id}</TableCell>
@@ -15,8 +20,13 @@ export default function VehicleTableRow({ vehicle }: { vehicle: Vehicle }) {
       <TableCell>{vehicle.vendido ? 'Sim' : 'Não'}</TableCell>
       <TableCell>{vehicle.veiculo}</TableCell>
       <TableCell>
-        <VehicleEditButton vehicleId={vehicle.id} />
-        <VehicleDeleteButton vehicleId={vehicle.id} />
+        <Stack direction="row" spacing={1}>
+          <Button size="small" variant="outlined" onClick={() => onDetails(vehicle)}>
+            Detalhes
+          </Button>
+          <VehicleEditButton vehicleId={vehicle.id} />
+          <VehicleDeleteButton vehicleId={vehicle.id} />
+        </Stack>
       </TableCell>
     </TableRow>
   );

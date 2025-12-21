@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useId } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Box } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
@@ -18,7 +18,13 @@ export default function VehicleAddButton() {
 
   const mutation = useMutation({
     mutationFn: postVehicle,
-    onSuccess: () => queryClient.invalidateQueries(['veiculos']),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['veiculos'] });
+      setOpen(false);
+    },
+    onError: (err) => {
+      console.error('Erro ao cadastrar veículo:', err);
+    },
   });
 
   return (
@@ -29,9 +35,17 @@ export default function VehicleAddButton() {
         title="Cadastrar veículo"
         content={
           <Box>
-            <Feedback {...mutation} successMessage="Veículo cadastrado" errorMessage="Erro ao cadastrar" />
-            {!mutation.isLoading && (
-              <VehicleForm formId={formId} onSubmit={mutation.mutate} />
+            <Feedback
+              {...mutation}
+              successMessage="Veículo cadastrado com sucesso"
+              errorMessage="Erro ao cadastrar veículo"
+            />
+
+            {!mutation.isPending && (
+              <VehicleForm
+                formId={formId}
+                onSubmit={(data: VehicleSchema) => mutation.mutate(data)}
+              />
             )}
           </Box>
         }
@@ -44,7 +58,12 @@ export default function VehicleAddButton() {
           </>
         }
       />
-      <Button variant="contained" endIcon={<DirectionsCarIcon />} onClick={() => setOpen(true)}>
+
+      <Button
+        variant="contained"
+        endIcon={<DirectionsCarIcon />}
+        onClick={() => setOpen(true)}
+      >
         Cadastrar Veículo
       </Button>
     </>
