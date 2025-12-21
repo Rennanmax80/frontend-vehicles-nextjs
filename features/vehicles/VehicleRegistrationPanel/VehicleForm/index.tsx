@@ -1,7 +1,7 @@
 'use client';
 
 import { TextField, MenuItem } from '@mui/material';
-import { Controller, UseFormReturn } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 import FormControl from '@/app/components/Forms/FormControl';
 import InputText from '@/app/components/Forms/InputText';
@@ -19,9 +19,13 @@ export default function VehicleForm({
   onSubmit,
 }: Props) {
   return (
-    <FormControl<VehicleSchema>
+    <FormControl
       formId={formId}
       defaultValues={{
+        veiculo: '',
+        marca: '',
+        ano: undefined,
+        descricao: '',
         vendido: true,
         ...defaultValues,
       }}
@@ -30,13 +34,9 @@ export default function VehicleForm({
       styles={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: 2,
+        gap: 16,
       }}
-      render={(
-        control: UseFormReturn<VehicleSchema>['control'],
-        errors: UseFormReturn<VehicleSchema>['formState']['errors'],
-        { setValue }
-      ) => (
+      render={(control: any, errors: any) => (
         <>
           <InputText
             name="veiculo"
@@ -54,7 +54,7 @@ export default function VehicleForm({
             helperText={errors.marca?.message}
           />
 
-          {/* 🔥 ANO como NUMBER controlado */}
+          {/* ✅ NUMBER controlado corretamente */}
           <Controller
             name="ano"
             control={control}
@@ -63,9 +63,16 @@ export default function VehicleForm({
                 {...field}
                 label="Ano"
                 type="number"
+                value={field.value ?? ''}
                 error={!!errors.ano}
                 helperText={errors.ano?.message}
-                onChange={(e) => field.onChange(Number(e.target.value))}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value === ''
+                      ? undefined
+                      : Number(e.target.value)
+                  )
+                }
               />
             )}
           />
@@ -78,7 +85,7 @@ export default function VehicleForm({
             helperText={errors.descricao?.message}
           />
 
-          {/* 🔥 SELECT CONTROLADO (sem warning MUI) */}
+          {/* ✅ SELECT 100% controlado */}
           <Controller
             name="vendido"
             control={control}
