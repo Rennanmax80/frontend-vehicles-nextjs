@@ -1,7 +1,7 @@
 import api from '@/lib/axios';
-import { Vehicle } from '@/types/vehicle.types';
+import { VehiclePayload } from '@/types/vehicle-payload';
 
-export async function postVehicle(payload: Omit<Vehicle, 'id'>) {
-  const { data } = await api.post('/veiculos', payload);
+export async function postVehicle(payload: VehiclePayload) {
+  const { data } = await api.post('/vehicles', payload);
   return data;
 }
