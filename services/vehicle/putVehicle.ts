@@ -5,6 +5,6 @@ export async function putVehicle(
   payload: VehiclePayload,
   vehicleId: number
 ) {
-  const { data } = await api.put(`/vehicles/${vehicleId}`, payload);
+  const { data } = await api.put(`/veiculos/${vehicleId}`, payload);
   return data;
 }
