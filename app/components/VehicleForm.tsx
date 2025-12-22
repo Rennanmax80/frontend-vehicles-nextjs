@@ -1,55 +1,59 @@
-"use client";
+'use client';
 
-import { Button, TextField, Stack } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
+import { TextField, Checkbox, Button, FormControlLabel } from '@mui/material';
+import { VehiclePayload } from '@/types/vehicle-payload';
 
-type VehicleFormData = {
-  modelo: string;
-  marca: string;
-  ano: number;
-};
+interface Props {
+  formId: string;
+  defaultValues?: VehiclePayload;
+  onSubmit: (data: VehiclePayload) => void;
+}
 
-export default function VehicleForm() {
-  const {
-    register,
-    handleSubmit
-  } = useForm<VehicleFormData>({
-    defaultValues: {
-      modelo: "",
-      marca: "",
-      ano: 0, // 🔥 evita uncontrolled
-    },
+export default function VehicleForm({
+  formId,
+  defaultValues,
+  onSubmit,
+}: Props) {
+  const { register, handleSubmit } = useForm<VehiclePayload>({
+    defaultValues,
   });
 
-  function onSubmit(data: VehicleFormData) {
-    console.log("Veículo cadastrado:", data);
-  }
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={2}>
-        <TextField
-          label="Modelo"
-          {...register("modelo")}
-        />
+    <form id={formId} onSubmit={handleSubmit(onSubmit)}>
+      <TextField
+        label="Veículo"
+        fullWidth
+        margin="normal"
+        {...register('veiculo')}
+      />
 
-        <TextField
-          label="Marca"
-          {...register("marca")}
-        />
+      <TextField
+        label="Marca"
+        fullWidth
+        margin="normal"
+        {...register('marca')}
+      />
 
-        <TextField
-          label="Ano"
-          type="number"
-          {...register("ano", {
-            valueAsNumber: true, // 🔥 ESSENCIAL
-          })}
-        />
+      <TextField
+        label="Ano"
+        type="number"
+        fullWidth
+        margin="normal"
+        {...register('ano', { valueAsNumber: true })}
+      />
 
-        <Button variant="contained" type="submit">
-          Salvar
-        </Button>
-      </Stack>
+      <TextField
+        label="Descrição"
+        fullWidth
+        margin="normal"
+        {...register('descricao')}
+      />
+
+      <FormControlLabel
+        control={<Checkbox {...register('vendido')} />}
+        label="Vendido"
+      />
     </form>
   );
 }

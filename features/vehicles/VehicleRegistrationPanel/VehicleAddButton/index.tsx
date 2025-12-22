@@ -9,7 +9,7 @@ import Dialog from '@/app/components/Dialog/page';
 import Feedback from '@/app/components/Feedback/page';
 import VehicleForm from '../VehicleForm';
 import { postVehicle } from '@/services/vehicle/postVehicle';
-import { VehicleSchema } from '../VehicleForm/vehicle-schema';
+import { VehiclePayload } from '@/types/vehicle-payload';
 
 export default function VehicleAddButton() {
   const formId = useId();
@@ -17,13 +17,10 @@ export default function VehicleAddButton() {
   const [open, setOpen] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: postVehicle,
+    mutationFn: (data: VehiclePayload) => postVehicle(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['veiculos'] });
       setOpen(false);
-    },
-    onError: (err) => {
-      console.error('Erro ao cadastrar veículo:', err);
     },
   });
 
@@ -36,7 +33,9 @@ export default function VehicleAddButton() {
         content={
           <Box>
             <Feedback
-              {...mutation}
+              isLoading={mutation.isPending}
+              isError={mutation.isError}
+              isSuccess={mutation.isSuccess}
               successMessage="Veículo cadastrado com sucesso"
               errorMessage="Erro ao cadastrar veículo"
             />
@@ -44,7 +43,9 @@ export default function VehicleAddButton() {
             {!mutation.isPending && (
               <VehicleForm
                 formId={formId}
-                onSubmit={(data: VehicleSchema) => mutation.mutate(data)}
+                onSubmit={(data: VehiclePayload) =>
+                  mutation.mutate(data)
+                }
               />
             )}
           </Box>

@@ -10,7 +10,8 @@ import Feedback from '@/app/components/Feedback/page';
 import VehicleForm from '../../VehicleForm';
 import { getVehicleById } from '@/services/vehicle/getVehicleById';
 import { putVehicle } from '@/services/vehicle/putVehicle';
-import { VehicleSchema } from '../../VehicleForm/vehicle-schema';
+import { Vehicle } from '@/types/vehicle.types';
+import { VehiclePayload } from '@/types/vehicle-payload';
 
 interface Props {
   vehicleId: number;
@@ -21,18 +22,20 @@ export default function VehicleEditButton({ vehicleId }: Props) {
   const formId = useId();
   const queryClient = useQueryClient();
 
-  const vehicleQuery = useQuery<VehicleSchema>({
+  const vehicleQuery = useQuery<Vehicle>({
     queryKey: ['veiculos', vehicleId],
     queryFn: () => getVehicleById(vehicleId),
     enabled: open,
   });
 
   const mutation = useMutation({
-    mutationFn: (payload: VehicleSchema) =>
+    mutationFn: (payload: VehiclePayload) =>
       putVehicle(payload, vehicleId),
-    onSuccess: (_, payload) => {
-      queryClient.invalidateQueries(['veiculos']);
-      queryClient.setQueryData(['veiculos', vehicleId], payload);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['veiculos'] });
+      queryClient.invalidateQueries({
+        queryKey: ['veiculos', vehicleId],
+      });
     },
   });
 
@@ -43,6 +46,18 @@ export default function VehicleEditButton({ vehicleId }: Props) {
 
   const handleClose = () => setOpen(false);
 
+  // 🔹 converte Vehicle → VehiclePayload
+  const defaultValues: VehiclePayload | undefined =
+    vehicleQuery.data
+      ? {
+          veiculo: vehicleQuery.data.veiculo,
+          marca: vehicleQuery.data.marca,
+          ano: vehicleQuery.data.ano,
+          descricao: vehicleQuery.data.descricao,
+          vendido: Boolean(vehicleQuery.data.vendido),
+        }
+      : undefined;
+
   return (
     <>
       <Dialog
@@ -51,19 +66,10 @@ export default function VehicleEditButton({ vehicleId }: Props) {
         title={`Editar veículo ID: ${vehicleId}`}
         content={
           vehicleQuery.isLoading ? (
-            <Feedback
-              isLoading
-              isError={false}
-              isSuccess={false}
-              successMessage=""
-              errorMessage=""
-            />
+            <Feedback isLoading />
           ) : vehicleQuery.isError ? (
             <Feedback
-              isLoading={false}
               isError
-              isSuccess={false}
-              successMessage=""
               errorMessage="Erro ao buscar veículo"
             />
           ) : (
@@ -71,14 +77,17 @@ export default function VehicleEditButton({ vehicleId }: Props) {
               <Feedback
                 successMessage="Veículo atualizado com sucesso"
                 errorMessage="Erro ao atualizar veículo"
-                isLoading={mutation.isLoading}
+                isLoading={mutation.isPending}
                 isError={mutation.isError}
                 isSuccess={mutation.isSuccess}
               />
+
               <VehicleForm
                 formId={formId}
-                defaultValues={vehicleQuery.data}
-                onSubmit={mutation.mutate}
+                defaultValues={defaultValues}
+                onSubmit={(data: VehiclePayload) =>
+                  mutation.mutate(data)
+                }
               />
             </Box>
           )
@@ -90,7 +99,7 @@ export default function VehicleEditButton({ vehicleId }: Props) {
               form={formId}
               type="submit"
               variant="contained"
-              disabled={mutation.isLoading}
+              disabled={mutation.isPending}
             >
               Salvar
             </Button>

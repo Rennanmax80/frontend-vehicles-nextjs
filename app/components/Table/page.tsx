@@ -23,7 +23,7 @@ export default function Table({ headings, children, styles }: Props) {
       <MuiTable stickyHeader>
         <TableHead>
           <TableRow>
-            {headings.map(h => (
+            {(headings ?? []).map(h => (
               <TableCell key={h}>{h}</TableCell>
             ))}
           </TableRow>

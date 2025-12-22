@@ -1,7 +1,8 @@
 import api from '@/lib/axios';
 import { Vehicle } from '@/types/vehicle.types';
 
-export async function getVehicleById(id: number) {
-  const { data } = await api.get<Vehicle>(`/veiculos/${id}`);
+export async function getVehicleById(id: number): Promise<Vehicle> {
+  const { data } = await api.get(`/veiculos/${id}`);
   return data;
 }
+
